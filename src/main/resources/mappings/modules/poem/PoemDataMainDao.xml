@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.poem.dao.PoemDataMainDao">
+    
+	<sql id="poemDataMainColumns">
+		a.id AS "id",
+		a.type AS "type",
+		a.author AS "author",
+		a.poem_name AS "poemName",
+		a.dynasty AS "dynasty",
+		a.content AS "content",
+		a.summary AS "summary",
+		a.appreciate AS "appreciate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="poemDataMainJoins">
+	</sql>
+    
+	<select id="getPoemById" resultType="PoemDataMain">
+		SELECT 
+			<include refid="poemDataMainColumns"/>
+		FROM poem_data_main a
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PoemDataMain">
+		SELECT 
+			<include refid="poemDataMainColumns"/>
+		FROM poem_data_main a
+		<include refid="poemDataMainJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="poemName != null">
+              and  a.poem_name like CONCAT('%',#{poemName},'%')
+            </if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PoemDataMain">
+		SELECT 
+			<include refid="poemDataMainColumns"/>
+		FROM poem_data_main a
+		<include refid="poemDataMainJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO poem_data_main(
+			id,
+			type,
+			author,
+			poem_name,
+			dynasty,
+			content,
+			summary,
+			appreciate,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{type},
+			#{author},
+			#{poemName},
+			#{dynasty},
+			#{content},
+			#{summary},
+			#{appreciate},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE poem_data_main SET 	
+			type = #{type},
+			author = #{author},
+			poem_name = #{poemName},
+			dynasty = #{dynasty},
+			content = #{content},
+			summary = #{summary},
+			appreciate = #{appreciate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE poem_data_main SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
