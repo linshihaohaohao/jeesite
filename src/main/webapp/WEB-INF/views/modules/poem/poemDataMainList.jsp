@@ -18,7 +18,7 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/poem/poemDataMain/">诗词列表</a></li>
+		<li class="active"><a href="${ctx}/poem/poemDataMain/list">诗词列表</a></li>
 		<shiro:hasPermission name="poem:poemDataMain:edit"><li><a href="${ctx}/poem/poemDataMain/form">诗词添加</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="poemDataMain" action="${ctx}/poem/poemDataMain/" method="post" class="breadcrumb form-search">
@@ -51,7 +51,7 @@
                 <td>${fns:getDictLabel(poemDataMain.dynasty,'DYNASTY','无分类')}</td>
                 <td>${poemDataMain.poemName}</td>
 				<td><a href="${ctx}/poem/poemDataMain/form?id=${poemDataMain.id}">
-					<fmt:formatDate value="${poemDataMain.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                    <fmt:formatDate value="${poemDataMain.updateDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</a></td>
 				<td>
 					${poemDataMain.remarks}

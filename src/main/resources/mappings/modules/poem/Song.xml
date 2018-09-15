@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.poem.dao.SongDao">
+    <sql id="songColumns">
+        a.id,
+       a.song_name as "songName",
+       a.singer as "singer",
+       a.composer as "composer",
+       a.lyricist as "lyricist",
+       a.create_by AS "createBy.no",
+       a.create_date AS "createDate",
+       a.update_by AS "updateBy.no",
+       a.update_date AS "updateDate",
+       a.remarks AS "remarks",
+       a.del_flag AS "delFlag"
+    </sql>
+
+
+    <select id="get" resultType="Song">
+        SELECT
+        <include refid="songColumns"/>
+        FROM song a
+        WHERE a.id=#{id}
+    </select>
+
+    <select id="findList" resultType="Song">
+        SELECT
+        <include refid="songColumns"/>
+        FROM song a
+        <where>
+            a.del_flag=#{DEL_FLAG_NORMAL}
+            <if test="songName!=null">
+                and a.song_name like CONCAT('%',#{songName},'%')
+            </if>
+        </where>
+        <choose>
+            <when test="page != null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO song (
+            id,
+            song_name,
+            singer,
+            composer,
+            lyricist,
+            create_by,
+            create_date,
+            update_by,
+            update_date,
+            del_flag,
+            remarks
+        ) VALUES (
+            #{id},
+            #{songName},
+            #{singer},
+            #{composer},
+            #{lyricist},
+            #{createBy.no},
+            #{createDate},
+            #{updateBy.no},
+            #{updateDate},
+            #{delFlag},
+            #{remarks}
+        )
+    </insert>
+
+    <update id="delete">UPDATE Song a
+    SET del_flag = #{DEL_FLAG_DELETE}
+    WHERE id = #{id}
+
+    </update>
+
+    <update id="update">
+        UPDATE song
+        SET
+            song_name   = #{songName},
+            singer      = #{singer},
+            composer    = #{composer},
+            lyricist    = #{lyricist},
+            create_by   = #{createBy.no},
+            create_date = #{createDate},
+            update_by   = #{updateBy.no},
+            update_date = #{updateDate},
+            del_flag    = #{delFlag},
+            remarks     = #{remarks}
+        WHERE id = #{id}
+    </update>
+
+</mapper>
